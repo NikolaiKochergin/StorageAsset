@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using UnityEditor;
+using UnityEngine;
 #if YANDEX_GAMES
 using Agava.YandexGames;
 #endif
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace SaveSystem
 {
@@ -48,7 +46,6 @@ namespace SaveSystem
         private static void SaveRemote()
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
-            return;
 #endif
 #if YANDEX_GAMES
             var serialized = JsonUtility.ToJson(_data);
@@ -60,7 +57,6 @@ namespace SaveSystem
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
             onDataLoadedCallback?.Invoke(null);
-            return;
 #endif
 #if YANDEX_GAMES
             PlayerAccount.GetPlayerData(data =>
@@ -109,9 +105,9 @@ namespace SaveSystem
 
         private static void CheckData()
         {
-            if(_data == null) Load();
+            if (_data == null) Load();
         }
-        
+
         public static IEnumerator ClearData(Action onRemoteDataCleared = null)
         {
             PlayerPrefs.DeleteAll();
@@ -119,7 +115,7 @@ namespace SaveSystem
             onRemoteDataCleared?.Invoke();
             yield return true;
 #endif
-#if  YANDEX_GAMES && !UNITY_EDITOR
+#if YANDEX_GAMES && !UNITY_EDITOR
             var isRemoteDateCleared = false;
             PlayerAccount.SetPlayerData("", () =>
             {
@@ -132,22 +128,12 @@ namespace SaveSystem
 #endif
         }
 
-        public static void PrintFloatKeys()
-        {
-            CheckData();
-            var keys = _data.Floats.Keys;
-            foreach (var key in keys)
-            {
-                Debug.Log(key);
-            }
-        }
-
         public static DateTime GetSaveTime()
         {
             CheckData();
             return DateTime.Parse(_data.SaveTime);
         }
-        
+
         public static void SetLevel(int index)
         {
             CheckData();
@@ -278,24 +264,23 @@ namespace SaveSystem
     {
         public int LevelNumber = 1;
         public int DisplayedLevelNumber = 1;
-        public int SessionCount = 0;
+        public int SessionCount;
         public string SaveTime = DateTime.MinValue.ToString();
         public string RegistrationDate = DateTime.Now.ToString();
         public string LastLoginDate = DateTime.Now.ToString();
         public SerializedDictionary<string, float> Floats = new();
         public SerializedDictionary<string, int> Ints = new();
         public SerializedDictionary<string, string> Strings = new();
-        public int Soft = 0;
+        public int Soft;
     }
-    
+
     [Serializable]
     public class SerializedDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
     {
-        [SerializeField]
-        private List<TKey> _keys = new();
-        [SerializeField]
-        private List<TValue> _values = new();
-    
+        [SerializeField] private List<TKey> _keys = new();
+
+        [SerializeField] private List<TValue> _values = new();
+
         public void OnBeforeSerialize()
         {
             _keys.Clear();
@@ -306,14 +291,11 @@ namespace SaveSystem
                 _values.Add(kvp.Value);
             }
         }
-    
+
         public void OnAfterDeserialize()
         {
             Clear();
-            for (int i = 0; i != Math.Min(_keys.Count, _values.Count); i++)
-            {
-                Add(_keys[i], _values[i]);
-            }
+            for (var i = 0; i != Math.Min(_keys.Count, _values.Count); i++) Add(_keys[i], _values[i]);
         }
     }
 }

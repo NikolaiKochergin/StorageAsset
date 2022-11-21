@@ -1,18 +1,18 @@
 using System.Collections;
-#if YANDEX_GAMES
-using Agava.YandexGames;
-#endif
 using SaveSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if YANDEX_GAMES
+using Agava.YandexGames;
+#endif
 
 public class LevelLoader : MonoBehaviour
 {
     [SerializeField] private bool _isClearDataOnStart;
-    
+
     private IEnumerator Start()
     {
-#if  YANDEX_GAMES && !UNITY_EDITOR
+#if YANDEX_GAMES && !UNITY_EDITOR
         yield return YandexGamesSdk.Initialize();
         PlayerAccount.RequestPersonalProfileDataPermission();
         PlayerAccount.Authorize();
@@ -24,7 +24,7 @@ public class LevelLoader : MonoBehaviour
         }
 
         yield return Storage.SyncRemoteSave();
-        
+
         LoadNextLevel();
     }
 
