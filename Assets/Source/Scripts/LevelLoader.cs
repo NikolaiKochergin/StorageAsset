@@ -35,6 +35,7 @@ public class LevelLoader : MonoBehaviour
 
         var index = Storage.GetLevel();
         index = Mathf.Clamp(index, 1, SceneManager.sceneCountInBuildSettings - 1);
+        Storage.SetLevel(index);
 
         SceneManager.LoadScene(index);
     }
