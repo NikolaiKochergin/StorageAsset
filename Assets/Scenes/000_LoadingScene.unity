@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8fdffa8c7c3d39448a33c345e3b2c19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _repeatFromLevel: 1
   _isClearDataOnStart: 0
 --- !u!1 &705507993
 GameObject:

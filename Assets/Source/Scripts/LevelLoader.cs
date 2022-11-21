@@ -25,12 +25,17 @@ public class LevelLoader : MonoBehaviour
 
         yield return Storage.SyncRemoteSave();
 
-        LoadNextLevel();
+        LoadLevel();
     }
 
-    private void LoadNextLevel()
+    private void LoadLevel()
     {
-        Debug.Log("level loaded");
-        SceneManager.LoadScene(Storage.GetLevel());
+        Storage.AddSession();
+        Storage.SetLastLoginDate();
+
+        var index = Storage.GetLevel();
+        index = Mathf.Clamp(index, 1, SceneManager.sceneCountInBuildSettings - 1);
+
+        SceneManager.LoadScene(index);
     }
 }
