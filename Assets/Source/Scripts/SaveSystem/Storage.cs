@@ -8,13 +8,20 @@ using Agava.YandexGames;
 
 namespace SaveSystem
 {
-    public static class Storage
+    public class Storage
     {
         private static readonly string DataName = nameof(DataName);
 
-        private static Data _data;
+        private SaveMode _mode;
+        private Data _data;
 
-        public static void Load()
+        public Storage(SaveMode mode = SaveMode.Immediately)
+        {
+            _mode = mode;
+            Load();
+        }
+
+        private void Load()
         {
             if (PlayerPrefs.HasKey(DataName))
             {
@@ -27,7 +34,7 @@ namespace SaveSystem
             }
         }
 
-        public static void Save()
+        public void Save()
         {
             _data.SaveTime = DateTime.Now.ToString();
             var serialized = JsonUtility.ToJson(_data);
@@ -35,9 +42,10 @@ namespace SaveSystem
         }
 
 #if UNITY_WEBGL
-        private static void SaveRemote()
+        private void SaveRemote()
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
+            Debug.Log("Saved to remote storage");
             return;
 #endif
 #if YANDEX_GAMES
@@ -46,9 +54,10 @@ namespace SaveSystem
 #endif
         }
 
-        private static void LoadRemote(Action<Data> onDataLoadedCallback)
+        private void LoadRemote(Action<Data> onDataLoadedCallback)
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
+            Debug.Log("Loaded from remote storage");
             onDataLoadedCallback?.Invoke(null);
             return;
 #endif
@@ -68,9 +77,8 @@ namespace SaveSystem
 #endif
         }
 
-        public static IEnumerator SyncRemoteSave(Action onDataIsSynchronizedCallback = null)
+        public IEnumerator SyncRemoteSave(Action onDataIsSynchronizedCallback = null)
         {
-            Load();
             var isRemoteDataLoaded = false;
             LoadRemote(remoteData =>
             {
@@ -97,17 +105,13 @@ namespace SaveSystem
                 yield return null;
         }
 #endif
-        private static void CheckData()
-        {
-            if (_data == null) Load();
-        }
-
-        public static IEnumerator ClearData(Action onRemoteDataCleared = null)
+        public IEnumerator ClearData(Action onRemoteDataCleared = null)
         {
             _data = null;
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
 #if !UNITY_WEBGL || UNITY_EDITOR
+            Debug.Log("Data cleared");
             onRemoteDataCleared?.Invoke();
             yield return true;
 #endif
@@ -124,135 +128,123 @@ namespace SaveSystem
 #endif
         }
 
-        public static DateTime GetSaveTime()
+        public DateTime GetSaveTime()
         {
-            CheckData();
             return DateTime.Parse(_data.SaveTime);
         }
 
-        public static void SetLevel(int index)
+        public void SetLevel(int index)
         {
-            CheckData();
             _data.LevelNumber = index;
-            Save();
+            if(_mode == SaveMode.Immediately) Save();
         }
 
-        public static int GetLevel()
+        public int GetLevel()
         {
-            CheckData();
             return _data.LevelNumber;
         }
 
-        public static void SetFloat(string key, float value)
+        public void SetFloat(string key, float value)
         {
-            CheckData();
             if (_data.Floats.ContainsKey(key))
                 _data.Floats[key] = value;
             else
                 _data.Floats.Add(key, value);
-            Save();
+            if(_mode == SaveMode.Immediately) Save();
         }
 
-        public static float GetFloat(string key, float defaultValue = 0f)
+        public float GetFloat(string key, float defaultValue = 0f)
         {
-            CheckData();
             return _data.Floats.ContainsKey(key) ? _data.Floats[key] : defaultValue;
         }
 
-        public static void SetInt(string key, int value)
+        public void SetInt(string key, int value)
         {
-            CheckData();
             if (_data.Ints.ContainsKey(key))
                 _data.Ints[key] = value;
             else
                 _data.Ints.Add(key, value);
-            Save();
+            if(_mode == SaveMode.Immediately) Save();
         }
 
-        public static int GetInt(string key, int defaultValue = 0)
+        public int GetInt(string key, int defaultValue = 0)
         {
-            CheckData();
             return _data.Ints.ContainsKey(key) ? _data.Ints[key] : defaultValue;
         }
 
-        public static void SetString(string key, string value)
+        public void SetString(string key, string value)
         {
-            CheckData();
             if (_data.Strings.ContainsKey(key))
                 _data.Strings[key] = value;
             else
                 _data.Strings.Add(key, value);
-            Save();
+            if(_mode == SaveMode.Immediately) Save();
         }
 
-        public static string GetString(string key, string defaultValue = "")
+        public string GetString(string key, string defaultValue = "")
         {
-            CheckData();
             return _data.Strings.ContainsKey(key) ? _data.Strings[key] : defaultValue;
         }
 
-        public static void AddDisplayedLevelNumber()
+        public void AddDisplayedLevelNumber()
         {
-            CheckData();
             _data.DisplayedLevelNumber++;
-            Save();
+            if(_mode == SaveMode.Immediately) Save();
         }
 
-        public static int GetDisplayedLevelNumber()
+        public int GetDisplayedLevelNumber()
         {
-            CheckData();
             return _data.DisplayedLevelNumber;
         }
 
-        public static void AddSession()
+        public void AddSession()
         {
-            CheckData();
             _data.SessionCount++;
-            Save();
+            if(_mode == SaveMode.Immediately) Save();
         }
 
-        public static int GetSessionCount()
+        public int GetSessionCount()
         {
-            CheckData();
             return _data.SessionCount;
         }
 
-        public static DateTime GetRegistrationDate()
+        public DateTime GetRegistrationDate()
         {
-            CheckData();
             return DateTime.Parse(_data.RegistrationDate);
         }
 
-        public static void SetLastLoginDate()
+        public void SetLastLoginDate()
         {
-            CheckData();
             _data.LastLoginDate = DateTime.Now.ToString();
-            Save();
+            if(_mode == SaveMode.Immediately) Save();
         }
 
-        public static DateTime GetLastLoginDate()
+        public DateTime GetLastLoginDate()
         {
-            CheckData();
             return DateTime.Parse(_data.LastLoginDate);
         }
 
-        public static int GetNumberDaysAfterRegistration()
+        public int GetNumberDaysAfterRegistration()
         {
             return GetLastLoginDate().Day - GetRegistrationDate().Day;
         }
 
-        public static void SetSoft(int value)
+        public void SetSoft(int value)
         {
-            CheckData();
             _data.Soft = value;
-            Save();
+            if(_mode == SaveMode.Immediately) Save();
         }
 
-        public static int GetSoft()
+        public int GetSoft()
         {
-            CheckData();
             return _data.Soft;
         }
+    }
+    
+    public enum SaveMode
+    {
+        Immediately,
+        Delayed
     }
 
     [Serializable]

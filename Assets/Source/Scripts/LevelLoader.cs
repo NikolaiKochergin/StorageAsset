@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using SaveSystem;
 using UnityEngine;
@@ -9,6 +10,13 @@ using Agava.YandexGames;
 public class LevelLoader : MonoBehaviour
 {
     [SerializeField] private bool _isClearDataOnStart;
+    
+    public Storage Storage { get; private set; }
+
+    private void Awake()
+    {
+        Storage = new Storage();
+    }
 
     private IEnumerator Start()
     {
@@ -26,10 +34,10 @@ public class LevelLoader : MonoBehaviour
             Debug.Log("Data is cleared");
             yield return Storage.ClearData();
         }
-
+#if UNITY_WEBGL
         yield return Storage.SyncRemoteSave(()=> Debug.Log("Data is syncronized"));
         yield return new WaitForSeconds(0.25f);
-
+#endif
         LoadLevel();
     }
 
