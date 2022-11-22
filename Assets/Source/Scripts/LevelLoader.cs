@@ -13,17 +13,22 @@ public class LevelLoader : MonoBehaviour
     private IEnumerator Start()
     {
 #if YANDEX_GAMES && !UNITY_EDITOR
-        yield return YandexGamesSdk.Initialize();
+        yield return YandexGamesSdk.Initialize(()=>Debug.Log("Yandex SDK is initialized"));
         PlayerAccount.RequestPersonalProfileDataPermission();
-        PlayerAccount.Authorize();
+        if(PlayerAccount.IsAuthorized == false)
+            PlayerAccount.Authorize();
+        else
+            Debug.Log("Player is autorized.");    
 #endif
+        
         if (_isClearDataOnStart)
         {
-            Debug.Log("Data cleared");
+            Debug.Log("Data is cleared");
             yield return Storage.ClearData();
         }
 
-        yield return Storage.SyncRemoteSave();
+        yield return Storage.SyncRemoteSave(()=> Debug.Log("Data is syncronized"));
+        yield return new WaitForSeconds(0.25f);
 
         LoadLevel();
     }

@@ -16,28 +16,20 @@ namespace SaveSystem
 
         public static void Load()
         {
-            _data ??= new Data();
-
             if (PlayerPrefs.HasKey(DataName))
             {
                 var serialized = PlayerPrefs.GetString(DataName);
                 _data = JsonUtility.FromJson<Data>(serialized);
-                Save();
             }
             else
             {
-                SaveWithDefaultDate();
+                _data ??= new Data();
             }
         }
 
         public static void Save()
         {
             _data.SaveTime = DateTime.Now.ToString();
-            SaveWithDefaultDate();
-        }
-
-        private static void SaveWithDefaultDate()
-        {
             var serialized = JsonUtility.ToJson(_data);
             PlayerPrefs.SetString(DataName, serialized);
         }
