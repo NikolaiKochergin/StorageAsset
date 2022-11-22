@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 #if YANDEX_GAMES
 using Agava.YandexGames;
@@ -11,7 +10,7 @@ namespace SaveSystem
 {
     public static class Storage
     {
-        private static readonly string DataName = PlayerSettings.productName;
+        private static readonly string DataName = nameof(DataName);
 
         private static Data _data;
 
@@ -46,6 +45,7 @@ namespace SaveSystem
         private static void SaveRemote()
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
+            return;
 #endif
 #if YANDEX_GAMES
             var serialized = JsonUtility.ToJson(_data);
@@ -57,6 +57,7 @@ namespace SaveSystem
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
             onDataLoadedCallback?.Invoke(null);
+            return;
 #endif
 #if YANDEX_GAMES
             PlayerAccount.GetPlayerData(data =>
