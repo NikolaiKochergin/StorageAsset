@@ -12,7 +12,7 @@ namespace SaveSystem
     {
         private static readonly string DataName = nameof(DataName);
 
-        private SaveMode _mode;
+        private readonly SaveMode _mode;
         private Data _data;
 
         public Storage(SaveMode mode = SaveMode.Immediately)
