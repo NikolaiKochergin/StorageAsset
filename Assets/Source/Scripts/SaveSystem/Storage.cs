@@ -34,6 +34,7 @@ namespace SaveSystem
             PlayerPrefs.SetString(DataName, serialized);
         }
 
+#if UNITY_WEBGL
         private static void SaveRemote()
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
@@ -95,7 +96,7 @@ namespace SaveSystem
             while (isRemoteDataLoaded == false)
                 yield return null;
         }
-
+#endif
         private static void CheckData()
         {
             if (_data == null) Load();
