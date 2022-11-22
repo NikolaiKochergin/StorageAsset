@@ -110,7 +110,9 @@ namespace SaveSystem
 
         public static IEnumerator ClearData(Action onRemoteDataCleared = null)
         {
+            _data = null;
             PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
 #if !UNITY_WEBGL || UNITY_EDITOR
             onRemoteDataCleared?.Invoke();
             yield return true;

@@ -43,6 +43,11 @@ public class GameSceneManager : MonoBehaviour
         SceneManager.LoadScene(nextLevelIndex);
     }
 
+    public void LevelFail()
+    {
+        Debug.Log("Level" + SceneManager.GetActiveScene().buildIndex + "Fail");
+    }
+
     public void ReloadScene()
     {
         Storage.SyncRemoteSave();
