@@ -8,7 +8,7 @@ using Agava.YandexGames;
 
 namespace SaveSystem
 {
-    public class Storage
+    public class Storage : IStorage
     {
         private static readonly string DataName = nameof(DataName);
 

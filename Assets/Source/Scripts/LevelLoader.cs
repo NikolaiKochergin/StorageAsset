@@ -11,7 +11,7 @@ public class LevelLoader : MonoBehaviour
 {
     [SerializeField] private bool _isClearDataOnStart;
     
-    public Storage Storage { get; private set; }
+    public IStorage Storage { get; private set; }
 
     private void Awake()
     {
@@ -28,7 +28,6 @@ public class LevelLoader : MonoBehaviour
         else
             Debug.Log("Player is autorized.");    
 #endif
-        
         if (_isClearDataOnStart)
         {
             Debug.Log("Data is cleared");

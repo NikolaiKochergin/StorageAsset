@@ -6,7 +6,7 @@ public class GameSceneManager : MonoBehaviour
 {
     [SerializeField] [Min(1)] private int _repeatFromLevel = 1;
     
-    public Storage Storage { get; private set; }
+    public IStorage Storage { get; private set; }
 
     private void Awake()
     {
