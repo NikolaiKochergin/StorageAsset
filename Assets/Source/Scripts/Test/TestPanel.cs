@@ -7,19 +7,20 @@ public class TestPanel : MonoBehaviour
     private const string IntValue = nameof(IntValue);
     private const string FloatValue = nameof(FloatValue);
     private const string StringValue = nameof(StringValue);
-    
+
+    [SerializeField] private GameSceneManager _gameSceneManager;
     [SerializeField] private TMP_InputField _inputField;
 
     public void OnSetIntValueButtonClicked()
     {
         int inputFieldText = int.Parse(_inputField.text);
         var intValue = inputFieldText;
-        Storage.SetInt(IntValue, intValue);
+        _gameSceneManager.Storage.SetInt(IntValue, intValue);
     }
 
     public void OnGetIntValueButtonClicked()
     {
-        int value = Storage.GetInt(IntValue);
+        int value = _gameSceneManager.Storage.GetInt(IntValue);
         _inputField.text = value.ToString();
     }
     
@@ -27,12 +28,12 @@ public class TestPanel : MonoBehaviour
     {
         float inputFieldText = float.Parse(_inputField.text);
         var floatValue = inputFieldText;
-        Storage.SetFloat(FloatValue, floatValue);
+        _gameSceneManager.Storage.SetFloat(FloatValue, floatValue);
     }
 
     public void OnGetFloatValueButtonClicked()
     {
-        float value = Storage.GetFloat(FloatValue);
+        float value = _gameSceneManager.Storage.GetFloat(FloatValue);
         _inputField.text = value.ToString();
     }
     
@@ -40,12 +41,12 @@ public class TestPanel : MonoBehaviour
     {
         string inputFieldText = _inputField.text;
         var stringValue = inputFieldText;
-        Storage.SetString(StringValue, stringValue);
+        _gameSceneManager.Storage.SetString(StringValue, stringValue);
     }
 
     public void OnGetStringValueButtonClicked()
     {
-        string value = Storage.GetString(StringValue);
+        string value = _gameSceneManager.Storage.GetString(StringValue);
         _inputField.text = value;
     }
 }

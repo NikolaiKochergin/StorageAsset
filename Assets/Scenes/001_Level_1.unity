@@ -824,6 +824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d613a9cab0bb80409d084b554f68f21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameSceneManager: {fileID: 1606871167}
   _inputField: {fileID: 1069775265}
 --- !u!114 &385720540
 MonoBehaviour:
@@ -2561,6 +2562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d613a9cab0bb80409d084b554f68f21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameSceneManager: {fileID: 1606871167}
   _inputField: {fileID: 517618344}
 --- !u!1 &956167835
 GameObject:
@@ -4917,6 +4919,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _displayedLevelText: {fileID: 1919081065}
+  _gameSceneManager: {fileID: 1606871167}
 --- !u!1 &1919081064
 GameObject:
   m_ObjectHideFlags: 0
@@ -5108,6 +5111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d613a9cab0bb80409d084b554f68f21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameSceneManager: {fileID: 1606871167}
   _inputField: {fileID: 756193862}
 --- !u!114 &1944784981
 MonoBehaviour:

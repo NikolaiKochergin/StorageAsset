@@ -5,9 +5,12 @@ using UnityEngine.SceneManagement;
 public class GameSceneManager : MonoBehaviour
 {
     [SerializeField] [Min(1)] private int _repeatFromLevel = 1;
+    
+    public IStorage Storage { get; private set; }
 
     private void Awake()
     {
+        Storage = new Storage();
         Storage.SetLevel(SceneManager.GetActiveScene().buildIndex);
     }
 
