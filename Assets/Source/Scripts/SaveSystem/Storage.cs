@@ -18,20 +18,17 @@ namespace SaveSystem
         public Storage(SaveMode mode = SaveMode.Immediately)
         {
             _mode = mode;
-            Load();
+            _data = Load();
         }
 
-        private void Load()
+        private Data Load()
         {
             if (PlayerPrefs.HasKey(DataName))
             {
                 var serialized = PlayerPrefs.GetString(DataName);
-                _data = JsonUtility.FromJson<Data>(serialized);
+                return JsonUtility.FromJson<Data>(serialized);
             }
-            else
-            {
-                _data ??= new Data();
-            }
+            return new Data();
         }
 
         public void Save()
@@ -42,17 +39,6 @@ namespace SaveSystem
         }
 
 #if UNITY_WEBGL
-        private void SaveRemote()
-        {
-#if !UNITY_WEBGL || UNITY_EDITOR
-            Debug.Log("Saved to remote storage");
-            return;
-#endif
-#if YANDEX_GAMES
-            var serialized = JsonUtility.ToJson(_data);
-            PlayerAccount.SetPlayerData(serialized);
-#endif
-        }
 
         private void LoadRemote(Action<Data> onDataLoadedCallback)
         {
@@ -74,6 +60,18 @@ namespace SaveSystem
                     onDataLoadedCallback?.Invoke(remoteData);
                 }
             });
+#endif
+        }
+
+        private void SaveRemote()
+        {
+#if !UNITY_WEBGL || UNITY_EDITOR
+            Debug.Log("Saved to remote storage");
+            return;
+#endif
+#if YANDEX_GAMES
+            var serialized = JsonUtility.ToJson(_data);
+            PlayerAccount.SetPlayerData(serialized);
 #endif
         }
 
