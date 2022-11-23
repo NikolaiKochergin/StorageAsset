@@ -63,8 +63,9 @@ namespace SaveSystem
 #endif
         }
 
-        private void SaveRemote()
+        public void SaveRemote()
         {
+            Save();
 #if !UNITY_WEBGL || UNITY_EDITOR
             Debug.Log("Saved to remote storage");
             return;

@@ -26,40 +26,55 @@ public class GameSceneManager : MonoBehaviour
     {
         if (pauseStatus)
         {
+            Storage.SaveRemote();
             
-            Storage.SyncRemoteSave();
+            Analytic.SendEventOnGameExit(
+                Storage.GetRegistrationDate().ToString(),
+                Storage.GetSessionCount(),
+                Storage.GetNumberDaysAfterRegistration(),
+                Storage.GetSoft());
         }
     }
 
     private void OnApplicationQuit()
     {
-        Storage.SyncRemoteSave();
+        Storage.SaveRemote();
+        
+        Analytic.SendEventOnGameExit(
+            Storage.GetRegistrationDate().ToString(),
+            Storage.GetSessionCount(),
+            Storage.GetNumberDaysAfterRegistration(),
+            Storage.GetSoft());
     }
 
-    public void LoadNextLevel()
+    public void OnLoadNextLevel()
     {
         var nextLevelIndex = SceneManager.GetActiveScene().buildIndex + 1;
-
         if (nextLevelIndex >= SceneManager.sceneCountInBuildSettings)
             nextLevelIndex = _repeatFromLevel;
 
         Storage.SetLevel(nextLevelIndex);
         Storage.AddDisplayedLevelNumber();
-        Storage.SyncRemoteSave();
+        Storage.SaveRemote();
 
-        Debug.Log("Level" + SceneManager.GetActiveScene().buildIndex + "Complete");
+        Analytic.SendEventOnLevelComplete(Storage.GetDisplayedLevelNumber());
 
         SceneManager.LoadScene(nextLevelIndex);
     }
 
-    public void LevelFail()
+    public void OnLevelFail()
     {
-        Debug.Log("Level" + SceneManager.GetActiveScene().buildIndex + "Fail");
+        Storage.SaveRemote();
+        
+        Analytic.SendEventOnFail(Storage.GetDisplayedLevelNumber());
     }
 
-    public void ReloadScene()
+    public void OnReloadScene()
     {
-        Storage.SyncRemoteSave();
+        Storage.SaveRemote();
+        
+        Analytic.SendEventOnLevelRestart(Storage.GetDisplayedLevelNumber());
+        
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

@@ -12,6 +12,9 @@ namespace Source.Scripts.Analytics
 #if GAME_ANALYTICS
             _analytics.Add(new GameAnalytic());
 #endif
+#if APP_METRICA
+            _analytics.Add(new AppMetricaAnalytic());
+#endif
         }
 
         public void SendEventOnGameInitialize(int sessionCount)

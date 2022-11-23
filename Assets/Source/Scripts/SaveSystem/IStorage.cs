@@ -6,6 +6,7 @@ namespace SaveSystem
     public interface IStorage
     {
         void Save();
+        void SaveRemote();
 #if UNITY_WEBGL
         IEnumerator SyncRemoteSave(Action onDataIsSynchronizedCallback = null);
 #endif

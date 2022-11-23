@@ -708,7 +708,7 @@ PlayerSettings:
   webGLDecompressionFallback: 1
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    WebGL: YANDEX_GAMES
+    WebGL: YANDEX_GAMES;GAME_ANALYTICS;APP_METRICA;APP_METRICA_TRACK_LOCATION_DISABLED
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
