@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if YANDEX_GAMES
+#if YANDEX_GAMES && !UNITY_EDITOR
 using Agava.YandexGames;
 #endif
 
-namespace SaveSystem
+namespace Source.Scripts.SaveSystem
 {
     public class Storage : IStorage
     {
@@ -28,6 +28,7 @@ namespace SaveSystem
                 var serialized = PlayerPrefs.GetString(DataName);
                 return JsonUtility.FromJson<Data>(serialized);
             }
+
             return new Data();
         }
 
@@ -38,14 +39,168 @@ namespace SaveSystem
             PlayerPrefs.SetString(DataName, serialized);
         }
 
-#if UNITY_WEBGL
+        public IEnumerator ClearData(Action onRemoteDataCleared = null)
+        {
+            _data = null;
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+#if !UNITY_WEBGL || UNITY_EDITOR
+            Debug.Log("Data cleared");
+            onRemoteDataCleared?.Invoke();
+            yield return true;
+#endif
+#if YANDEX_GAMES && !UNITY_EDITOR
+            var isRemoteDateCleared = false;
+            PlayerAccount.SetPlayerData("", () =>
+            {
+                isRemoteDateCleared = true;
+                onRemoteDataCleared?.Invoke();
+            });
 
+            while (isRemoteDateCleared == false)
+                yield return null;
+#endif
+        }
+
+        public DateTime GetSaveTime()
+        {
+            return DateTime.Parse(_data.SaveTime);
+        }
+
+        public void SetLevel(int index)
+        {
+            _data.LevelNumber = index;
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public int GetLevel()
+        {
+            return _data.LevelNumber;
+        }
+
+        public void SetFloat(string key, float value)
+        {
+            if (_data.Floats.ContainsKey(key))
+                _data.Floats[key] = value;
+            else
+                _data.Floats.Add(key, value);
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public float GetFloat(string key)
+        {
+            return _data.Floats.ContainsKey(key)
+                ? _data.Floats[key]
+                : throw new ArgumentException($"Floats doesn't contain Key: {key}");
+        }
+
+        public bool HasKeyFloat(string key)
+        {
+            return _data.Floats.ContainsKey(key);
+        }
+
+        public void SetInt(string key, int value)
+        {
+            if (_data.Ints.ContainsKey(key))
+                _data.Ints[key] = value;
+            else
+                _data.Ints.Add(key, value);
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public int GetInt(string key)
+        {
+            return _data.Ints.ContainsKey(key) 
+                ? _data.Ints[key] 
+                : throw new ArgumentException($"Ints doesn't contain Key: {key}");
+        }
+
+        public bool HasKeyInt(string key)
+        {
+            return _data.Ints.ContainsKey(key);
+        }
+
+        public void SetString(string key, string value)
+        {
+            if (_data.Strings.ContainsKey(key))
+                _data.Strings[key] = value;
+            else
+                _data.Strings.Add(key, value);
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public string GetString(string key)
+        {
+            return _data.Strings.ContainsKey(key) 
+                ? _data.Strings[key] 
+                : throw new ArgumentException($"Strings doesn't contain Key: {key}");
+        }
+
+        public bool HasKeyString(string key)
+        {
+            return _data.Strings.ContainsKey(key);
+        }
+
+        public void AddDisplayedLevelNumber()
+        {
+            _data.DisplayedLevelNumber++;
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public int GetDisplayedLevelNumber()
+        {
+            return _data.DisplayedLevelNumber;
+        }
+
+        public void AddSession()
+        {
+            _data.SessionCount++;
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public int GetSessionCount()
+        {
+            return _data.SessionCount;
+        }
+
+        public DateTime GetRegistrationDate()
+        {
+            return DateTime.Parse(_data.RegistrationDate);
+        }
+
+        public void SetLastLoginDate()
+        {
+            _data.LastLoginDate = DateTime.Now.ToString();
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public DateTime GetLastLoginDate()
+        {
+            return DateTime.Parse(_data.LastLoginDate);
+        }
+
+        public int GetNumberDaysAfterRegistration()
+        {
+            return GetLastLoginDate().Day - GetRegistrationDate().Day;
+        }
+
+        public void SetSoft(int value)
+        {
+            _data.Soft = value;
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public int GetSoft()
+        {
+            return _data.Soft;
+        }
+
+#if UNITY_WEBGL
         private void LoadRemote(Action<Data> onDataLoadedCallback)
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
             Debug.Log("Loaded from remote storage");
             onDataLoadedCallback?.Invoke(null);
-            return;
 #endif
 #if YANDEX_GAMES && !UNITY_EDITOR
             PlayerAccount.GetPlayerData(data =>
@@ -68,7 +223,6 @@ namespace SaveSystem
             Save();
 #if !UNITY_WEBGL || UNITY_EDITOR
             Debug.Log("Saved to remote storage");
-            return;
 #endif
 #if YANDEX_GAMES && !UNITY_EDITOR
             var serialized = JsonUtility.ToJson(_data);
@@ -104,142 +258,8 @@ namespace SaveSystem
                 yield return null;
         }
 #endif
-        public IEnumerator ClearData(Action onRemoteDataCleared = null)
-        {
-            _data = null;
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.Save();
-#if !UNITY_WEBGL || UNITY_EDITOR
-            Debug.Log("Data cleared");
-            onRemoteDataCleared?.Invoke();
-            yield return true;
-#endif
-#if YANDEX_GAMES && !UNITY_EDITOR
-            var isRemoteDateCleared = false;
-            PlayerAccount.SetPlayerData("", () =>
-            {
-                isRemoteDateCleared = true;
-                onRemoteDataCleared?.Invoke();
-            });
-
-            while (isRemoteDateCleared == false)
-                yield return null;
-#endif
-        }
-
-        public DateTime GetSaveTime()
-        {
-            return DateTime.Parse(_data.SaveTime);
-        }
-
-        public void SetLevel(int index)
-        {
-            _data.LevelNumber = index;
-            if(_mode == SaveMode.Immediately) Save();
-        }
-
-        public int GetLevel()
-        {
-            return _data.LevelNumber;
-        }
-
-        public void SetFloat(string key, float value)
-        {
-            if (_data.Floats.ContainsKey(key))
-                _data.Floats[key] = value;
-            else
-                _data.Floats.Add(key, value);
-            if(_mode == SaveMode.Immediately) Save();
-        }
-
-        public float GetFloat(string key, float defaultValue = 0f)
-        {
-            return _data.Floats.ContainsKey(key) ? _data.Floats[key] : defaultValue;
-        }
-
-        public void SetInt(string key, int value)
-        {
-            if (_data.Ints.ContainsKey(key))
-                _data.Ints[key] = value;
-            else
-                _data.Ints.Add(key, value);
-            if(_mode == SaveMode.Immediately) Save();
-        }
-
-        public int GetInt(string key, int defaultValue = 0)
-        {
-            return _data.Ints.ContainsKey(key) ? _data.Ints[key] : defaultValue;
-        }
-
-        public void SetString(string key, string value)
-        {
-            if (_data.Strings.ContainsKey(key))
-                _data.Strings[key] = value;
-            else
-                _data.Strings.Add(key, value);
-            if(_mode == SaveMode.Immediately) Save();
-        }
-
-        public string GetString(string key, string defaultValue = "")
-        {
-            return _data.Strings.ContainsKey(key) ? _data.Strings[key] : defaultValue;
-        }
-
-        public void AddDisplayedLevelNumber()
-        {
-            _data.DisplayedLevelNumber++;
-            if(_mode == SaveMode.Immediately) Save();
-        }
-
-        public int GetDisplayedLevelNumber()
-        {
-            return _data.DisplayedLevelNumber;
-        }
-
-        public void AddSession()
-        {
-            _data.SessionCount++;
-            if(_mode == SaveMode.Immediately) Save();
-        }
-
-        public int GetSessionCount()
-        {
-            return _data.SessionCount;
-        }
-
-        public DateTime GetRegistrationDate()
-        {
-            return DateTime.Parse(_data.RegistrationDate);
-        }
-
-        public void SetLastLoginDate()
-        {
-            _data.LastLoginDate = DateTime.Now.ToString();
-            if(_mode == SaveMode.Immediately) Save();
-        }
-
-        public DateTime GetLastLoginDate()
-        {
-            return DateTime.Parse(_data.LastLoginDate);
-        }
-
-        public int GetNumberDaysAfterRegistration()
-        {
-            return GetLastLoginDate().Day - GetRegistrationDate().Day;
-        }
-
-        public void SetSoft(int value)
-        {
-            _data.Soft = value;
-            if(_mode == SaveMode.Immediately) Save();
-        }
-
-        public int GetSoft()
-        {
-            return _data.Soft;
-        }
     }
-    
+
     public enum SaveMode
     {
         Immediately,
