@@ -1,18 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-#if GAME_ANALYTICS
-using GameAnalyticsSDK;
-#endif
-
 namespace Source.Scripts.Analytics
 {
     public class AnalyticManager
     {
+        private readonly List<IAnalytic> _analytics = new();
+
         public AnalyticManager()
         {
 #if GAME_ANALYTICS
-            GameAnalytics.Initialize();
+            _analytics.Add(new GameAnalytic());
 #endif
         }
 
@@ -22,9 +20,9 @@ namespace Source.Scripts.Analytics
             {
                 {AnalyticNames.Count, sessionCount}
             };
-#if GAME_ANALYTICS
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, AnalyticNames.GameStart, obj);
-#endif
+
+            foreach (var analytic in _analytics)
+                analytic.OnGameInitialize(obj);
         }
 
         public void SendEventOnLevelStart(int levelNumber)
@@ -33,9 +31,8 @@ namespace Source.Scripts.Analytics
             {
                 {AnalyticNames.Level, levelNumber}
             };
-#if GAME_ANALYTICS
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, AnalyticNames.LevelStart, obj);
-#endif
+            foreach (var analytic in _analytics)
+                analytic.OnLevelStart(obj);
         }
 
         public void SendEventOnLevelComplete(int levelNumber)
@@ -43,11 +40,10 @@ namespace Source.Scripts.Analytics
             var obj = new Dictionary<string, object>
             {
                 {AnalyticNames.Level, levelNumber},
-                {AnalyticNames.TimeSpent, (int)Time.timeSinceLevelLoad}
+                {AnalyticNames.TimeSpent, (int) Time.timeSinceLevelLoad}
             };
-#if GAME_ANALYTICS
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, AnalyticNames.LevelComplete, obj);
-#endif
+            foreach (var analytic in _analytics)
+                analytic.OnLevelComplete(obj);
         }
 
         public void SendEventOnFail(int levelNumber)
@@ -55,11 +51,10 @@ namespace Source.Scripts.Analytics
             var obj = new Dictionary<string, object>
             {
                 {AnalyticNames.Level, levelNumber},
-                {AnalyticNames.TimeSpent, (int)Time.timeSinceLevelLoad}
+                {AnalyticNames.TimeSpent, (int) Time.timeSinceLevelLoad}
             };
-#if GAME_ANALYTICS
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, AnalyticNames.Fail, obj);
-#endif
+            foreach (var analytic in _analytics)
+                analytic.OnLevelFail(obj);
         }
 
         public void SendEventOnLevelRestart(int levelNumber)
@@ -68,12 +63,11 @@ namespace Source.Scripts.Analytics
             {
                 {AnalyticNames.Level, levelNumber}
             };
-#if GAME_ANALYTICS
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, AnalyticNames.Restart, obj);
-#endif
+            foreach (var analytic in _analytics)
+                analytic.OnLevelRestart(obj);
         }
 
-        public void SendEventOnSoftSpend(string purchaseType, string storeName, int purchaseAmount, int purchasesCount)
+        public void SendEventOnSoftSpent(string purchaseType, string storeName, int purchaseAmount, int purchasesCount)
         {
             var obj = new Dictionary<string, object>
             {
@@ -82,9 +76,8 @@ namespace Source.Scripts.Analytics
                 {AnalyticNames.Amount, purchaseAmount},
                 {AnalyticNames.Count, purchasesCount}
             };
-#if GAME_ANALYTICS
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Undefined, AnalyticNames.SoftSpent, obj);
-#endif
+            foreach (var analytic in _analytics)
+                analytic.OnSoftSpent(obj);
         }
 
         public void SendEventOnGameExit(string registrationDate, int sessionCount, int daysInGame)
@@ -101,11 +94,12 @@ namespace Source.Scripts.Analytics
             {
                 {AnalyticNames.Day, daysInGame}
             };
-#if GAME_ANALYTICS
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Undefined, AnalyticNames.RegistrationDay, regDayObj);
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Undefined, AnalyticNames.SessionCount, sessionCountObj);
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Undefined, AnalyticNames.DaysInGame, daysInGameObj);
-#endif
+            foreach (var analytic in _analytics)
+            {
+                analytic.OnRegistrationDayIs(regDayObj);
+                analytic.OnSessionCountIs(sessionCountObj);
+                analytic.OnDaysInGameIs(daysInGameObj);
+            }
         }
 
         public void SendEventOnGameExit(string registrationDate, int sessionCount, int daysInGame, int currentSoft)
@@ -115,9 +109,8 @@ namespace Source.Scripts.Analytics
                 {AnalyticNames.CurrentSoft, currentSoft}
             };
             SendEventOnGameExit(registrationDate, sessionCount, daysInGame);
-#if GAME_ANALYTICS
-            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Undefined, AnalyticNames.CurrentSoft, obj);
-#endif
+            foreach (var analytic in _analytics)
+                analytic.OnCurrentSoftHave(obj);
         }
     }
 }

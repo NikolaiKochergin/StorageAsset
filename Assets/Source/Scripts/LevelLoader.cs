@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
 using SaveSystem;
+using Source.Scripts.Analytics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if YANDEX_GAMES
@@ -12,10 +12,12 @@ public class LevelLoader : MonoBehaviour
     [SerializeField] private bool _isClearDataOnStart;
     
     public IStorage Storage { get; private set; }
+    public AnalyticManager Analytic { get; private set; }
 
     private void Awake()
     {
         Storage = new Storage();
+        Analytic = new AnalyticManager();
     }
 
     private IEnumerator Start()
@@ -44,6 +46,7 @@ public class LevelLoader : MonoBehaviour
     {
         Storage.AddSession();
         Storage.SetLastLoginDate();
+        Analytic.SendEventOnGameInitialize(Storage.GetSessionCount());
 
         var index = Storage.GetLevel();
         index = Mathf.Clamp(index, 1, SceneManager.sceneCountInBuildSettings - 1);

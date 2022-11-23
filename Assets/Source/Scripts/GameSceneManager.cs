@@ -1,28 +1,34 @@
 using SaveSystem;
+using Source.Scripts.Analytics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameSceneManager : MonoBehaviour
 {
     [SerializeField] [Min(1)] private int _repeatFromLevel = 1;
-    
+
     public IStorage Storage { get; private set; }
+    public AnalyticManager Analytic { get; private set; }
 
     private void Awake()
     {
         Storage = new Storage();
+        Analytic = new AnalyticManager();
         Storage.SetLevel(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void Start()
     {
-        Debug.Log("Level" + SceneManager.GetActiveScene().buildIndex + "Start");
+        Analytic.SendEventOnLevelStart(Storage.GetDisplayedLevelNumber());
     }
 
     private void OnApplicationPause(bool pauseStatus)
     {
-        if (pauseStatus) 
+        if (pauseStatus)
+        {
+            
             Storage.SyncRemoteSave();
+        }
     }
 
     private void OnApplicationQuit()
