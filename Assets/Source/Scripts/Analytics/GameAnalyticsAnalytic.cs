@@ -69,6 +69,11 @@ namespace Source.Scripts.Analytics
         {
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Undefined, eventName, dataObjects);
         }
+
+        public void OnEvent(string eventName)
+        {
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Undefined, eventName);
+        }
     }
 }
 #endif

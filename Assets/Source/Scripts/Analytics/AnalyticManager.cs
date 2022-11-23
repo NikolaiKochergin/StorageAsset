@@ -119,10 +119,16 @@ namespace Source.Scripts.Analytics
                 analytic.OnCurrentSoftHave(obj);
         }
 
-        public void SendEvent(string name, Dictionary<string, object> dataObjects)
+        public void SendEvent(string eventName, Dictionary<string, object> dataObjects)
         {
             foreach (var analytic in _analytics)
-                analytic.OnEvent(name, dataObjects);
+                analytic.OnEvent(eventName, dataObjects);
+        }
+
+        public void SendEvent(string eventName)
+        {
+            foreach (var analytic in _analytics)
+                analytic.OnEvent(eventName);
         }
     }
 }

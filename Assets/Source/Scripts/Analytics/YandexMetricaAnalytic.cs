@@ -60,6 +60,11 @@ namespace Source.Scripts.Analytics
         {
             YandexMetrica.Send(eventName, dataObjects);
         }
+
+        public void OnEvent(string eventName)
+        {
+            YandexMetrica.Send(eventName);
+        }
     }
 }
 #endif

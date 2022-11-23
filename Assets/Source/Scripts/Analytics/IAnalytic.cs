@@ -15,5 +15,6 @@ namespace Source.Scripts.Analytics
         void OnDaysInGameIs(Dictionary<string, object> dataObjects);
         void OnCurrentSoftHave(Dictionary<string, object> dataObjects);
         void OnEvent(string eventName, Dictionary<string, object> dataObjects);
+        void OnEvent(string eventName);
     }
 }

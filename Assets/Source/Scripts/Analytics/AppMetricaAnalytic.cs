@@ -59,6 +59,11 @@ namespace Source.Scripts.Analytics
         {
             AppMetrica.Instance.ReportEvent(eventName, dataObjects);
         }
+
+        public void OnEvent(string eventName)
+        {
+            AppMetrica.Instance.ReportEvent(eventName);
+        }
     }
 }
 #endif
