@@ -10,10 +10,13 @@ namespace Source.Scripts.Analytics
         public AnalyticManager()
         {
 #if GAME_ANALYTICS
-            _analytics.Add(new GameAnalytic());
+            _analytics.Add(new GameAnalyticsAnalytic());
 #endif
 #if APP_METRICA
             _analytics.Add(new AppMetricaAnalytic());
+#endif
+#if YANDEX_METRICA && !UNITY_EDITOR
+            _analytics.Add(new YandexMetricaAnalytic());
 #endif
         }
 
@@ -114,6 +117,12 @@ namespace Source.Scripts.Analytics
             SendEventOnGameExit(registrationDate, sessionCount, daysInGame);
             foreach (var analytic in _analytics)
                 analytic.OnCurrentSoftHave(obj);
+        }
+
+        public void SendEvent(string name, Dictionary<string, object> dataObjects)
+        {
+            foreach (var analytic in _analytics)
+                analytic.OnEvent(name, dataObjects);
         }
     }
 }

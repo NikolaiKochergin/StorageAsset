@@ -1,63 +1,64 @@
-#if APP_METRICA
+#if YANDEX_METRICA && !UNITY_EDITOR
 using System.Collections.Generic;
+using Agava.YandexMetrica;
 
 namespace Source.Scripts.Analytics
 {
-    public class AppMetricaAnalytic : IAnalytic
+    public class YandexMetricaAnalytic : IAnalytic
     {
         public void OnGameInitialize(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.GameStart, dataObjects);
+            YandexMetrica.Send(AnalyticNames.GameStart, dataObjects);
         }
 
         public void OnLevelStart(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.LevelStart, dataObjects);
+            YandexMetrica.Send(AnalyticNames.LevelStart, dataObjects);
         }
 
         public void OnLevelComplete(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.LevelComplete, dataObjects);
+            YandexMetrica.Send(AnalyticNames.LevelComplete, dataObjects);
         }
 
         public void OnLevelFail(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.Fail, dataObjects);
+            YandexMetrica.Send(AnalyticNames.Fail, dataObjects);
         }
 
         public void OnLevelRestart(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.Restart, dataObjects);
+            YandexMetrica.Send(AnalyticNames.RegistrationDay, dataObjects);
         }
 
         public void OnSoftSpent(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.SoftSpent, dataObjects);
+            YandexMetrica.Send(AnalyticNames.SoftSpent, dataObjects);
         }
 
         public void OnRegistrationDayIs(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.RegistrationDay, dataObjects);
+            YandexMetrica.Send(AnalyticNames.RegistrationDay, dataObjects);
         }
 
         public void OnSessionCountIs(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.SessionCount, dataObjects);
+            YandexMetrica.Send(AnalyticNames.SessionCount, dataObjects);
         }
 
         public void OnDaysInGameIs(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.DaysInGame, dataObjects);
+            YandexMetrica.Send(AnalyticNames.DaysInGame, dataObjects);
         }
 
         public void OnCurrentSoftHave(Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(AnalyticNames.CurrentSoft, dataObjects);
+            YandexMetrica.Send(AnalyticNames.CurrentSoft, dataObjects);
         }
 
         public void OnEvent(string eventName, Dictionary<string, object> dataObjects)
         {
-            AppMetrica.Instance.ReportEvent(eventName, dataObjects);
+            YandexMetrica.Send(eventName, dataObjects);
         }
     }
 }

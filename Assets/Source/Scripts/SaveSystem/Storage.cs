@@ -47,7 +47,7 @@ namespace SaveSystem
             onDataLoadedCallback?.Invoke(null);
             return;
 #endif
-#if YANDEX_GAMES
+#if YANDEX_GAMES && !UNITY_EDITOR
             PlayerAccount.GetPlayerData(data =>
             {
                 if (data == "")
@@ -70,7 +70,7 @@ namespace SaveSystem
             Debug.Log("Saved to remote storage");
             return;
 #endif
-#if YANDEX_GAMES
+#if YANDEX_GAMES && !UNITY_EDITOR
             var serialized = JsonUtility.ToJson(_data);
             PlayerAccount.SetPlayerData(serialized);
 #endif

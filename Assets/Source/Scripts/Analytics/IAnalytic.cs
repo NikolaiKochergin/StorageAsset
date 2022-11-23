@@ -4,15 +4,16 @@ namespace Source.Scripts.Analytics
 {
     public interface IAnalytic
     {
-        void OnGameInitialize(Dictionary<string, object> message);
-        void OnLevelStart(Dictionary<string, object> message);
-        void OnLevelComplete(Dictionary<string, object> message);
-        void OnLevelFail(Dictionary<string, object> message);
-        void OnLevelRestart(Dictionary<string, object> message);
-        void OnSoftSpent(Dictionary<string, object> message);
-        void OnRegistrationDayIs(Dictionary<string, object> message);
-        void OnSessionCountIs(Dictionary<string, object> message);
-        void OnDaysInGameIs(Dictionary<string, object> message);
-        void OnCurrentSoftHave(Dictionary<string, object> message);
+        void OnGameInitialize(Dictionary<string, object> dataObjects);
+        void OnLevelStart(Dictionary<string, object> dataObjects);
+        void OnLevelComplete(Dictionary<string, object> dataObjects);
+        void OnLevelFail(Dictionary<string, object> dataObjects);
+        void OnLevelRestart(Dictionary<string, object> dataObjects);
+        void OnSoftSpent(Dictionary<string, object> dataObjects);
+        void OnRegistrationDayIs(Dictionary<string, object> dataObjects);
+        void OnSessionCountIs(Dictionary<string, object> dataObjects);
+        void OnDaysInGameIs(Dictionary<string, object> dataObjects);
+        void OnCurrentSoftHave(Dictionary<string, object> dataObjects);
+        void OnEvent(string eventName, Dictionary<string, object> dataObjects);
     }
 }
