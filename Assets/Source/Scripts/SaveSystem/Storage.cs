@@ -23,20 +23,13 @@ namespace Source.Scripts.SaveSystem
 
         private Data Load()
         {
-            if (PlayerPrefs.HasKey(DataName))
-            {
-                var serialized = PlayerPrefs.GetString(DataName);
-                return JsonUtility.FromJson<Data>(serialized);
-            }
-
-            return new Data();
+            return PlayerPrefs.GetString(DataName)?.ToDeserialized<Data>() ?? new Data();
         }
 
         public void Save()
         {
             _data.SaveTime = DateTime.Now.ToString();
-            var serialized = JsonUtility.ToJson(_data);
-            PlayerPrefs.SetString(DataName, serialized);
+            PlayerPrefs.SetString(DataName, _data.ToJson());
         }
 
         public IEnumerator ClearData(Action onRemoteDataCleared = null)
@@ -205,15 +198,7 @@ namespace Source.Scripts.SaveSystem
 #if YANDEX_GAMES && !UNITY_EDITOR
             PlayerAccount.GetPlayerData(data =>
             {
-                if (data == "")
-                {
-                    onDataLoadedCallback?.Invoke(null);
-                }
-                else
-                {
-                    var remoteData = JsonUtility.FromJson<Data>(data);
-                    onDataLoadedCallback?.Invoke(remoteData);
-                }
+                onDataLoadedCallback?.Invoke(data == "" ? null : data.ToDeserialized<Data>());
             });
 #endif
         }
@@ -225,8 +210,7 @@ namespace Source.Scripts.SaveSystem
             Debug.Log("Saved to remote storage");
 #endif
 #if YANDEX_GAMES && !UNITY_EDITOR
-            var serialized = JsonUtility.ToJson(_data);
-            PlayerAccount.SetPlayerData(serialized);
+            PlayerAccount.SetPlayerData(_data.ToJson());
 #endif
         }
 
@@ -258,6 +242,15 @@ namespace Source.Scripts.SaveSystem
                 yield return null;
         }
 #endif
+    }
+
+    public static class DataExtensions
+    {
+        public static string ToJson(this object obj) => 
+            JsonUtility.ToJson(obj);
+
+        public static T ToDeserialized<T>(this string json) =>
+            JsonUtility.FromJson<T>(json);
     }
 
     public enum SaveMode
