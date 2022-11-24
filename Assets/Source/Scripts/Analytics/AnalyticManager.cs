@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Source.Scripts.Analytics
 {
-    public class AnalyticManager
+    public class AnalyticManager : IAnalyticManager
     {
         private readonly List<IAnalytic> _analytics = new();
 

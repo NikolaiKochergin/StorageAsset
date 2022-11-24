@@ -10,7 +10,7 @@ namespace Source.Scripts.SceneManagement
         [SerializeField] [Min(1)] private int _repeatFromLevel = 1;
 
         public IStorage Storage { get; private set; }
-        public AnalyticManager Analytic { get; private set; }
+        public IAnalyticManager Analytic { get; private set; }
 
         private void Awake()
         {
