@@ -15,7 +15,7 @@ namespace Source.Scripts.SaveSystem
         private readonly SaveMode _mode;
         private Data _data;
 
-        public Storage(SaveMode mode = SaveMode.Immediately)
+        public Storage(SaveMode mode = SaveMode.Delayed)
         {
             _mode = mode;
             _data = Load();

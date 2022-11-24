@@ -17,6 +17,7 @@ namespace Source.Scripts.SceneManagement
             Storage = new Storage();
             Analytic = new AnalyticManager();
             Storage.SetLevel(SceneManager.GetActiveScene().buildIndex);
+            Storage.Save();
         }
 
         private void Start()
@@ -28,8 +29,11 @@ namespace Source.Scripts.SceneManagement
         {
             if (pauseStatus)
             {
+#if UNITY_WEBGL
                 Storage.SaveRemote();
-            
+#else
+                Storage.Save();
+#endif
                 Analytic.SendEventOnGameExit(
                     Storage.GetRegistrationDate().ToString(),
                     Storage.GetSessionCount(),
@@ -40,8 +44,11 @@ namespace Source.Scripts.SceneManagement
 
         private void OnApplicationQuit()
         {
+#if UNITY_WEBGL
             Storage.SaveRemote();
-        
+#else
+            Storage.Save();
+#endif
             Analytic.SendEventOnGameExit(
                 Storage.GetRegistrationDate().ToString(),
                 Storage.GetSessionCount(),
@@ -57,8 +64,11 @@ namespace Source.Scripts.SceneManagement
 
             Storage.SetLevel(nextLevelIndex);
             Storage.AddDisplayedLevelNumber();
+#if UNITY_WEBGL
             Storage.SaveRemote();
-
+#else
+            Storage.Save();
+#endif
             Analytic.SendEventOnLevelComplete(Storage.GetDisplayedLevelNumber());
 
             SceneManager.LoadScene(nextLevelIndex);
@@ -66,15 +76,21 @@ namespace Source.Scripts.SceneManagement
 
         public void OnLevelFail()
         {
+#if UNITY_WEBGL
             Storage.SaveRemote();
-        
+#else
+            Storage.Save();
+#endif
             Analytic.SendEventOnFail(Storage.GetDisplayedLevelNumber());
         }
 
         public void OnReloadScene()
         {
+#if UNITY_WEBGL
             Storage.SaveRemote();
-        
+#else
+            Storage.Save();
+#endif
             Analytic.SendEventOnLevelRestart(Storage.GetDisplayedLevelNumber());
         
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

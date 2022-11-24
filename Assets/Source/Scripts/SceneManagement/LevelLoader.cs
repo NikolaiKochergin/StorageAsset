@@ -48,6 +48,7 @@ namespace Source.Scripts.SceneManagement
         {
             Storage.AddSession();
             Storage.SetLastLoginDate();
+            Storage.Save();
             Analytic.SendEventOnGameInitialize(Storage.GetSessionCount());
 
             var index = Storage.GetLevel();
