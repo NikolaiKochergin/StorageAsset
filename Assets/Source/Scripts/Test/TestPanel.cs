@@ -1,4 +1,3 @@
-using Source.Scripts;
 using Source.Scripts.SceneManagement;
 using TMPro;
 using UnityEngine;
@@ -14,40 +13,62 @@ public class TestPanel : MonoBehaviour
 
     public void OnSetIntValueButtonClicked()
     {
-        int inputFieldText = int.Parse(_inputField.text);
-        var intValue = inputFieldText;
-        _gameSceneManager.Storage.SetInt(IntValue, intValue);
+        if (int.TryParse(_inputField.text, out int inputFieldText))
+            _gameSceneManager.Storage.SetInt(IntValue, inputFieldText);
+        else
+            _inputField.text = "Enter an integer value";
     }
 
     public void OnGetIntValueButtonClicked()
     {
-        int value = _gameSceneManager.Storage.GetInt(IntValue);
-        _inputField.text = value.ToString();
+        if (_gameSceneManager.Storage.HasKeyInt(IntValue))
+        {
+            int value = _gameSceneManager.Storage.GetInt(IntValue);
+            _inputField.text = value.ToString();
+        }
+        else
+        {
+            _inputField.text = "Value is not setup";
+        }
     }
     
     public void OnSetFloatValueButtonClicked()
     {
-        float inputFieldText = float.Parse(_inputField.text);
-        var floatValue = inputFieldText;
-        _gameSceneManager.Storage.SetFloat(FloatValue, floatValue);
+        if (float.TryParse(_inputField.text, out float inputFieldText))
+            _gameSceneManager.Storage.SetFloat(FloatValue, inputFieldText);
+        else
+            _inputField.text = "Enter a float value";
     }
 
     public void OnGetFloatValueButtonClicked()
     {
-        float value = _gameSceneManager.Storage.GetFloat(FloatValue);
-        _inputField.text = value.ToString();
+        if (_gameSceneManager.Storage.HasKeyFloat(FloatValue))
+        {
+            float value = _gameSceneManager.Storage.GetFloat(FloatValue);
+            _inputField.text = value.ToString();
+        }
+        else
+        {
+            _inputField.text = "Value is not setup";
+        }
     }
     
     public void OnSetStringValueButtonClicked()
     {
         string inputFieldText = _inputField.text;
-        var stringValue = inputFieldText;
-        _gameSceneManager.Storage.SetString(StringValue, stringValue);
+        _gameSceneManager.Storage.SetString(StringValue, inputFieldText);
     }
 
     public void OnGetStringValueButtonClicked()
     {
-        string value = _gameSceneManager.Storage.GetString(StringValue);
-        _inputField.text = value;
+        if (_gameSceneManager.Storage.HasKeyString(StringValue))
+        {
+            string value = _gameSceneManager.Storage.GetString(StringValue);
+            _inputField.text = value;
+        }
+        else
+        {
+            _inputField.text = "Value is not setup";
+        }
     }
 }

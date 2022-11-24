@@ -41,7 +41,7 @@ namespace Source.Scripts.SaveSystem
 
         public IEnumerator ClearData(Action onRemoteDataCleared = null)
         {
-            _data = null;
+            _data = new Data();
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
 #if !UNITY_WEBGL || UNITY_EDITOR
