@@ -20,6 +20,6 @@ public class TestCanvas : MonoBehaviour
 
     public void OnClearDataButtonClicked()
     {
-        StartCoroutine(_gameSceneManager.Storage.ClearData());
+        StartCoroutine(_gameSceneManager.Storage.ClearDataRemote());
     }
 }

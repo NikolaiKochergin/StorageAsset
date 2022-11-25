@@ -6,11 +6,6 @@ namespace Source.Scripts.SaveSystem
 {
     public interface IStorage
     {
-        void Save();
-        IEnumerator ClearData(Action onRemoteDataCleared = null);
-        DateTime GetSaveTime();
-        void SetLevel(int index);
-        int GetLevel();
         void SetFloat(string key, float value);
         float GetFloat(string key);
         bool HasKeyFloat(string key);
@@ -36,7 +31,13 @@ namespace Source.Scripts.SaveSystem
         int GetNumberDaysAfterRegistration();
         void SetSoft(int value);
         int GetSoft();
+        DateTime GetSaveTime();
+        void SetLevel(int index);
+        int GetLevel();
+        void Save();
+        void ClearData();
         void SaveRemote();
         IEnumerator SyncRemoteSave(Action onDataIsSynchronizedCallback = null);
+        IEnumerator ClearDataRemote(Action onRemoteDataCleared = null);
     }
 }

@@ -9,60 +9,16 @@ namespace Source.Scripts.SaveSystem
 {
     public class Storage : IStorage
     {
-        private static readonly string DataName = nameof(DataName);
+        private readonly string _dataName;
 
         private readonly SaveMode _mode;
         private Data _data;
 
-        public Storage(SaveMode mode = SaveMode.Delayed)
+        public Storage(string dataName = "DataName", SaveMode mode = SaveMode.Delayed)
         {
+            _dataName = dataName;
             _mode = mode;
             _data = Load();
-        }
-
-        public void Save()
-        {
-            _data.SaveTime = DateTime.Now.ToString();
-            PlayerPrefs.SetString(DataName, _data.ToJson());
-        }
-
-        public IEnumerator ClearData(Action onRemoteDataCleared = null)
-        {
-            _data = new Data();
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.Save();
-#if !UNITY_WEBGL || UNITY_EDITOR
-            Debug.Log("Data cleared");
-            onRemoteDataCleared?.Invoke();
-            yield return true;
-#endif
-#if YANDEX_GAMES && !UNITY_EDITOR
-            var isRemoteDateCleared = false;
-            PlayerAccount.SetPlayerData("", () =>
-            {
-                isRemoteDateCleared = true;
-                onRemoteDataCleared?.Invoke();
-            });
-
-            while (isRemoteDateCleared == false)
-                yield return null;
-#endif
-        }
-
-        public DateTime GetSaveTime()
-        {
-            return DateTime.Parse(_data.SaveTime);
-        }
-
-        public void SetLevel(int index)
-        {
-            _data.LevelNumber = index;
-            if (_mode == SaveMode.Immediately) Save();
-        }
-
-        public int GetLevel()
-        {
-            return _data.LevelNumber;
         }
 
         public void SetFloat(string key, float value)
@@ -224,16 +180,44 @@ namespace Source.Scripts.SaveSystem
             return _data.Soft;
         }
 
+        public DateTime GetSaveTime()
+        {
+            return DateTime.Parse(_data.SaveTime);
+        }
+
+        public void SetLevel(int index)
+        {
+            _data.LevelNumber = index;
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public int GetLevel()
+        {
+            return _data.LevelNumber;
+        }
+        
+        public void Save()
+        {
+            _data.SaveTime = DateTime.Now.ToString();
+            PlayerPrefs.SetString(_dataName, _data.ToJson());
+        }
+
+        public void ClearData()
+        {
+            _data = new Data();
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            Debug.Log("Data cleared");
+        }
+
 #if UNITY_WEBGL
         public void SaveRemote()
         {
             Save();
-#if !UNITY_WEBGL || UNITY_EDITOR
-            Debug.Log("Saved to remote storage");
-#endif
 #if YANDEX_GAMES && !UNITY_EDITOR
             PlayerAccount.SetPlayerData(_data.ToJson());
 #endif
+            Debug.Log("Saved to remote storage");
         }
 
         public IEnumerator SyncRemoteSave(Action onDataIsSynchronizedCallback = null)
@@ -263,6 +247,24 @@ namespace Source.Scripts.SaveSystem
             while (isRemoteDataLoaded == false)
                 yield return null;
         }
+        
+        public IEnumerator ClearDataRemote(Action onRemoteDataCleared = null)
+        {
+            ClearData();
+            onRemoteDataCleared?.Invoke();
+            yield return true;
+#if YANDEX_GAMES && !UNITY_EDITOR
+            var isRemoteDateCleared = false;
+            PlayerAccount.SetPlayerData("", () =>
+            {
+                isRemoteDateCleared = true;
+                onRemoteDataCleared?.Invoke();
+            });
+
+            while (isRemoteDateCleared == false)
+                yield return null;
+#endif
+        }
 
         private void LoadRemote(Action<Data> onDataLoadedCallback)
         {
@@ -280,7 +282,7 @@ namespace Source.Scripts.SaveSystem
 #endif
         private Data Load()
         {
-            return PlayerPrefs.GetString(DataName)?.ToDeserialized<Data>() ?? new Data();
+            return PlayerPrefs.GetString(_dataName)?.ToDeserialized<Data>() ?? new Data();
         }
     }
 }

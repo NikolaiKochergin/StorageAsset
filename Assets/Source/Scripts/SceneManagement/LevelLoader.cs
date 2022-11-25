@@ -35,7 +35,7 @@ namespace Source.Scripts.SceneManagement
             if (_isClearDataOnStart)
             {
                 Debug.Log("Data is cleared");
-                yield return Storage.ClearData();
+                yield return Storage.ClearDataRemote();
             }
 #if UNITY_WEBGL
             yield return Storage.SyncRemoteSave(()=> Debug.Log("Data is synchronized"));
