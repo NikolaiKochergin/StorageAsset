@@ -25,9 +25,17 @@ ClearData - позволяет очистить хранилище.
 ----------------------------------
 
 Для платформы UNITY_WEBGL становятся доступны методы:
-SaveRemote сохраняет данные локально и отправляет в удаленное хранилище,
+SaveRemote сохраняет данные локально и отправляет в удаленное хранилище.
+
 SyncRemoteSave сравнивает локальные и удаленные данные по дате создания сохраняет более новые.
+Возвращает IEnumerator, необходимо дождаться выполнения yield return Storage.SyncRemoteSave();,
+либо yield return Storage.SyncRemoteSave(DoSomethingAfterCallback);
+Либо (в не ассинхронных методах) вызвать StartCoroutine(Storage.SyncRemoteSave(DoSomethingAfterCallback));
+
 ClearDataRemote очищает локальные и удаленные данные.
+Возвращает IEnumerator, необходимо дождаться выполнения yield return Storage.ClearDataRemote();,
+либо yield return Storage.ClearDataRemote(DoSomethingAfterCallback);
+Либо (в не ассинхронных методах) вызвать StartCoroutine(Storage.ClearDataRemote(DoSomethingAfterCallback));
 ----------------------------------
 
 На данный момент ассет поддерживает удаленное сохранение только совместно с пакетом agava.yandexgames
