@@ -16,6 +16,15 @@ namespace Source.Scripts.SceneManagement
         {
             Storage = new Storage();
             Analytic = new AnalyticManager();
+#if GAME_ANALYTICS
+            Analytic.AddAnalytic(new GameAnalyticsAnalytic());
+#endif
+#if APP_METRICA
+            Analytic.AddAnalytic(new AppMetricaAnalytic());
+#endif
+#if YANDEX_METRICA && !UNITY_EDITOR
+            Analytic.AddAnalytic(new YandexMetricaAnalytic());
+#endif
             Storage.SetLevel(SceneManager.GetActiveScene().buildIndex);
             Storage.Save();
         }

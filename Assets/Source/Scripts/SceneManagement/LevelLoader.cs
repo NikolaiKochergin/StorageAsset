@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Source.Scripts.Analytics;
 using Source.Scripts.SaveSystem;
 using UnityEngine;
@@ -20,6 +21,15 @@ namespace Source.Scripts.SceneManagement
         {
             Storage = new Storage();
             Analytic = new AnalyticManager();
+#if GAME_ANALYTICS
+            Analytic.AddAnalytic(new GameAnalyticsAnalytic());
+#endif
+#if APP_METRICA
+            Analytic.AddAnalytic(new AppMetricaAnalytic());
+#endif
+#if YANDEX_METRICA && !UNITY_EDITOR
+            Analytic.AddAnalytic(new YandexMetricaAnalytic());
+#endif
         }
 
         private IEnumerator Start()

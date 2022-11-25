@@ -4,6 +4,7 @@ namespace Source.Scripts.Analytics
 {
     public interface IAnalyticManager
     {
+        void AddAnalytic(IAnalytic analytic);
         void SendEventOnGameInitialize(int sessionCount);
         void SendEventOnLevelStart(int levelNumber);
         void SendEventOnLevelComplete(int levelNumber);

@@ -24,6 +24,12 @@ Storage Asset.
 ClearData - позволяет очистить хранилище.
 ----------------------------------
 
+В данный момент ассет поддерживает удаленное сохранение только совместно с пакетом agava.yandexgames
+https://github.com/forcepusher/com.agava.yandexgames
+После установки agava.yandexgames необходимо так же в Unity перейти в PlayerSettings -> Other Settings и
+в Sctipting Define Symbols добавить YANDEX_GAMES.
+----------------------------------
+
 Для платформы UNITY_WEBGL становятся доступны методы:
 SaveRemote сохраняет данные локально и отправляет в удаленное хранилище.
 
@@ -36,12 +42,6 @@ ClearDataRemote очищает локальные и удаленные данн
 Возвращает IEnumerator, необходимо дождаться выполнения yield return Storage.ClearDataRemote();,
 либо yield return Storage.ClearDataRemote(DoSomethingAfterCallback);
 Либо (в не ассинхронных методах) вызвать StartCoroutine(Storage.ClearDataRemote(DoSomethingAfterCallback));
-----------------------------------
-
-На данный момент ассет поддерживает удаленное сохранение только совместно с пакетом agava.yandexgames
-https://github.com/forcepusher/com.agava.yandexgames
-После установки agava.yandexgames необходимо так же в Unity перейти в PlayerSettings -> Other Settings и
-в Sctipting Define Symbols добавить YANDEX_GAMES.
 ----------------------------------
 
 Примечание: по сути Storage Asset собирает Data и сохраняет в PlayerPrefs по ключу

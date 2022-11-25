@@ -6,18 +6,20 @@ namespace Source.Scripts.Analytics
     public class AnalyticManager : IAnalyticManager
     {
         private readonly List<IAnalytic> _analytics = new();
-
-        public AnalyticManager()
+        
+        public AnalyticManager(IReadOnlyList<IAnalytic> analytics = null)
         {
-#if GAME_ANALYTICS
-            _analytics.Add(new GameAnalyticsAnalytic());
-#endif
-#if APP_METRICA
-            _analytics.Add(new AppMetricaAnalytic());
-#endif
-#if YANDEX_METRICA && !UNITY_EDITOR
-            _analytics.Add(new YandexMetricaAnalytic());
-#endif
+            if (analytics == null)
+            {
+                Debug.LogWarning("AnalyticManager doesn't contain any analytica");
+                return;
+            }
+            _analytics.AddRange(analytics);
+        }
+
+        public void AddAnalytic(IAnalytic analytic)
+        {
+            _analytics.Add(analytic);
         }
 
         public void SendEventOnGameInitialize(int sessionCount)
