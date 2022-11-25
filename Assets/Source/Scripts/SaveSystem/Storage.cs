@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 #if YANDEX_GAMES && !UNITY_EDITOR
 using Agava.YandexGames;
@@ -19,11 +18,6 @@ namespace Source.Scripts.SaveSystem
         {
             _mode = mode;
             _data = Load();
-        }
-
-        private Data Load()
-        {
-            return PlayerPrefs.GetString(DataName)?.ToDeserialized<Data>() ?? new Data();
         }
 
         public void Save()
@@ -134,6 +128,48 @@ namespace Source.Scripts.SaveSystem
             return _data.Strings.ContainsKey(key);
         }
 
+        public void SetVector3(string key, Vector3 value)
+        {
+            if (_data.Vectors.ContainsKey(key))
+                _data.Vectors[key] = value.AsVectorData();
+            else
+                _data.Vectors.Add(key, value.AsVectorData());
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public Vector3 GetVector3(string key)
+        {
+            return _data.Vectors.ContainsKey(key)
+                ? _data.Vectors[key].AsUnityVector()
+                : throw new ArgumentException($"Vectors doesn't contain Key: {key}");
+        }
+
+        public bool HasKeyVector3(string key)
+        {
+            return _data.Vectors.ContainsKey(key);
+        }
+
+        public void SetQuaternion(string key, Quaternion value)
+        {
+            if (_data.Quaternions.ContainsKey(key))
+                _data.Quaternions[key] = value.AsQuaternionData();
+            else
+                _data.Quaternions.Add(key, value.AsQuaternionData());
+            if (_mode == SaveMode.Immediately) Save();
+        }
+
+        public Quaternion GetQuaternion(string key)
+        {
+            return _data.Quaternions.ContainsKey(key)
+                ? _data.Quaternions[key].AsUnityQuaternion()
+                : throw new ArgumentException($"Quaternions doesn't contain Key: {key}");
+        }
+
+        public bool HasKeyQuaternion(string key)
+        {
+            return _data.Quaternions.ContainsKey(key);
+        }
+
         public void AddDisplayedLevelNumber()
         {
             _data.DisplayedLevelNumber++;
@@ -189,20 +225,6 @@ namespace Source.Scripts.SaveSystem
         }
 
 #if UNITY_WEBGL
-        private void LoadRemote(Action<Data> onDataLoadedCallback)
-        {
-#if !UNITY_WEBGL || UNITY_EDITOR
-            Debug.Log("Loaded from remote storage");
-            onDataLoadedCallback?.Invoke(null);
-#endif
-#if YANDEX_GAMES && !UNITY_EDITOR
-            PlayerAccount.GetPlayerData(data =>
-            {
-                onDataLoadedCallback?.Invoke(data == "" ? null : data.ToDeserialized<Data>());
-            });
-#endif
-        }
-
         public void SaveRemote()
         {
             Save();
@@ -241,61 +263,24 @@ namespace Source.Scripts.SaveSystem
             while (isRemoteDataLoaded == false)
                 yield return null;
         }
+
+        private void LoadRemote(Action<Data> onDataLoadedCallback)
+        {
+#if !UNITY_WEBGL || UNITY_EDITOR
+            Debug.Log("Loaded from remote storage");
+            onDataLoadedCallback?.Invoke(null);
 #endif
-    }
-
-    public static class DataExtensions
-    {
-        public static string ToJson(this object obj) => 
-            JsonUtility.ToJson(obj);
-
-        public static T ToDeserialized<T>(this string json) =>
-            JsonUtility.FromJson<T>(json);
-    }
-
-    public enum SaveMode
-    {
-        Immediately,
-        Delayed
-    }
-
-    [Serializable]
-    public class Data
-    {
-        public int LevelNumber = 1;
-        public int DisplayedLevelNumber = 1;
-        public int SessionCount;
-        public string SaveTime = DateTime.MinValue.ToString();
-        public string RegistrationDate = DateTime.Now.ToString();
-        public string LastLoginDate = DateTime.Now.ToString();
-        public SerializedDictionary<string, float> Floats = new();
-        public SerializedDictionary<string, int> Ints = new();
-        public SerializedDictionary<string, string> Strings = new();
-        public int Soft;
-    }
-
-    [Serializable]
-    public class SerializedDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
-    {
-        [SerializeField] private List<TKey> _keys = new();
-
-        [SerializeField] private List<TValue> _values = new();
-
-        public void OnBeforeSerialize()
-        {
-            _keys.Clear();
-            _values.Clear();
-            foreach (var kvp in this)
+#if YANDEX_GAMES && !UNITY_EDITOR
+            PlayerAccount.GetPlayerData(data =>
             {
-                _keys.Add(kvp.Key);
-                _values.Add(kvp.Value);
-            }
+                onDataLoadedCallback?.Invoke(data == "" ? null : data.ToDeserialized<Data>());
+            });
+#endif
         }
-
-        public void OnAfterDeserialize()
+#endif
+        private Data Load()
         {
-            Clear();
-            for (var i = 0; i != Math.Min(_keys.Count, _values.Count); i++) Add(_keys[i], _values[i]);
+            return PlayerPrefs.GetString(DataName)?.ToDeserialized<Data>() ?? new Data();
         }
     }
 }

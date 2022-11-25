@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using UnityEngine;
 
 namespace Source.Scripts.SaveSystem
 {
@@ -19,6 +20,12 @@ namespace Source.Scripts.SaveSystem
         void SetString(string key, string value);
         string GetString(string key);
         bool HasKeyString(string key);
+        void SetVector3(string key, Vector3 value);
+        Vector3 GetVector3(string key);
+        bool HasKeyVector3(string key);
+        void SetQuaternion(string key, Quaternion value);
+        Quaternion GetQuaternion(string key);
+        bool HasKeyQuaternion(string key);
         void AddDisplayedLevelNumber();
         int GetDisplayedLevelNumber();
         void AddSession();
