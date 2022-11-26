@@ -65,6 +65,12 @@ namespace Source.Scripts.Analytics
                 dataObjects);
         }
 
+        public void OnContentIsOver(Dictionary<string, object> dataObjects)
+        {
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Undefined, AnalyticNames.ContentIsOver, 
+                dataObjects);
+        }
+
         public void OnEvent(string eventName, Dictionary<string, object> dataObjects)
         {
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Undefined, eventName, dataObjects);

@@ -14,7 +14,7 @@ namespace Source.Scripts.SceneManagement
 
         private void Awake()
         {
-            Storage = new Storage();
+            Storage = new Storage(DataNames.MyGameName);
             Analytic = new AnalyticManager();
 #if GAME_ANALYTICS
             Analytic.AddAnalytic(new GameAnalyticsAnalytic());
@@ -69,7 +69,12 @@ namespace Source.Scripts.SceneManagement
         {
             var nextLevelIndex = SceneManager.GetActiveScene().buildIndex + 1;
             if (nextLevelIndex >= SceneManager.sceneCountInBuildSettings)
+            {
+                Analytic.SendEventContentIsOver(
+                    Storage.GetSessionCount(), 
+                    Storage.GetNumberDaysAfterRegistration());
                 nextLevelIndex = _repeatFromLevel;
+            }
 
             Storage.SetLevel(nextLevelIndex);
             Storage.AddDisplayedLevelNumber();

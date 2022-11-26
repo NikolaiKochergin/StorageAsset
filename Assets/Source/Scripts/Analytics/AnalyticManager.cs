@@ -121,6 +121,17 @@ namespace Source.Scripts.Analytics
                 analytic.OnCurrentSoftHave(obj);
         }
 
+        public void SendEventContentIsOver(int sessionCount, int daysInGame)
+        {
+            var obj = new Dictionary<string, object>
+            {
+                {AnalyticNames.Count, sessionCount},
+                {AnalyticNames.Day, daysInGame}
+            };
+            foreach (var analytic in _analytics)
+                analytic.OnContentIsOver(obj);
+        }
+
         public void SendEvent(string eventName, Dictionary<string, object> dataObjects)
         {
             foreach (var analytic in _analytics)

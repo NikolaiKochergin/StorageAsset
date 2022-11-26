@@ -13,6 +13,7 @@ namespace Source.Scripts.Analytics
         void SendEventOnSoftSpent(string purchaseType, string storeName, int purchaseAmount, int purchasesCount);
         void SendEventOnGameExit(string registrationDate, int sessionCount, int daysInGame);
         void SendEventOnGameExit(string registrationDate, int sessionCount, int daysInGame, int currentSoft);
+        void SendEventContentIsOver(int sessionCount, int daysInGame);
         void SendEvent(string eventName, Dictionary<string, object> dataObjects);
         void SendEvent(string eventName);
     }

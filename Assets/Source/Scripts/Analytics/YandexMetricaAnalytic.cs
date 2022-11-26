@@ -1,4 +1,4 @@
-#if YANDEX_METRICA && !UNITY_EDITOR
+#if YANDEX_METRICA
 using System.Collections.Generic;
 using Agava.YandexMetrica;
 
@@ -54,6 +54,11 @@ namespace Source.Scripts.Analytics
         public void OnCurrentSoftHave(Dictionary<string, object> dataObjects)
         {
             YandexMetrica.Send(AnalyticNames.CurrentSoft, dataObjects);
+        }
+
+        public void OnContentIsOver(Dictionary<string, object> dataObjects)
+        {
+            YandexMetrica.Send(AnalyticNames.ContentIsOver, dataObjects);
         }
 
         public void OnEvent(string eventName, Dictionary<string, object> dataObjects)

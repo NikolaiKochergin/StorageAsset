@@ -55,6 +55,11 @@ namespace Source.Scripts.Analytics
             AppMetrica.Instance.ReportEvent(AnalyticNames.CurrentSoft, dataObjects);
         }
 
+        public void OnContentIsOver(Dictionary<string, object> dataObjects)
+        {
+            AppMetrica.Instance.ReportEvent(AnalyticNames.ContentIsOver, dataObjects);
+        }
+
         public void OnEvent(string eventName, Dictionary<string, object> dataObjects)
         {
             AppMetrica.Instance.ReportEvent(eventName, dataObjects);

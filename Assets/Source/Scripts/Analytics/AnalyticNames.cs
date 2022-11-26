@@ -20,5 +20,6 @@ namespace Source.Scripts.Analytics
         public const string Amount = "amount";
         public const string CurrentSoft = "current_soft";
         public const string TimeSpent = "time_spent";
+        public const string ContentIsOver = "content_is_over";
     }
 }
