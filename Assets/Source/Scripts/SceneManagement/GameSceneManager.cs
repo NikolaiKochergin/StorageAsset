@@ -14,7 +14,7 @@ namespace Source.Scripts.SceneManagement
 
         private void Awake()
         {
-            Storage = new Storage(DataNames.MyGameName);
+            Storage = new Storage(DataNames.GameName);
             Analytic = new AnalyticManager();
 #if GAME_ANALYTICS
             Analytic.AddAnalytic(new GameAnalyticsAnalytic());

@@ -9,7 +9,7 @@ Storage Asset.
 По умолчанию хранилище создается в SaveMode.Delayed режиме. При этом после установки значений в Set...
 методах данные будут только назначаться в Data. Для сохранения необходимо выполнить Save(),
 например в конце уровня.
-В режиме SaveMode.Immediately (new Storage(SaveMode.Immediately)) после использования Set...
+В режиме SaveMode.Immediately (new Storage(DataNames.GameName, SaveMode.Immediately)) после использования Set...
 данные будут сохраняться автоматически, использовать Save() не обязательно.
 ----------------------------------
 
@@ -33,7 +33,7 @@ https://github.com/forcepusher/com.agava.yandexgames
 Для платформы UNITY_WEBGL становятся доступны методы:
 SaveRemote сохраняет данные локально и отправляет в удаленное хранилище.
 
-SyncRemoteSave сравнивает локальные и удаленные данные по дате создания сохраняет более новые.
+SyncRemoteSave сравнивает локальные и удаленные данные по дате создания, сохраняет более новые.
 Возвращает IEnumerator, необходимо дождаться выполнения yield return Storage.SyncRemoteSave();,
 либо yield return Storage.SyncRemoteSave(DoSomethingAfterCallback);
 Либо (в не ассинхронных методах) вызвать StartCoroutine(Storage.SyncRemoteSave(DoSomethingAfterCallback));
