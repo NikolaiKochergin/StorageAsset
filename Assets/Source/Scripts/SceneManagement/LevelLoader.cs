@@ -32,6 +32,7 @@ namespace Source.Scripts.SceneManagement
 #endif
         }
 
+#if UNITY_WEBGL
         private IEnumerator Start()
         {
 #if YANDEX_GAMES && !UNITY_EDITOR
@@ -47,12 +48,20 @@ namespace Source.Scripts.SceneManagement
                 Debug.Log("Data is cleared");
                 yield return Storage.ClearDataRemote();
             }
-#if UNITY_WEBGL
             yield return Storage.SyncRemoteSave(()=> Debug.Log("Data is synchronized"));
             yield return new WaitForSeconds(0.25f);
-#endif
             LoadLevel();
         }
+#else
+        private void Start()
+        {
+            if(_isClearDataOnStart)
+                Storage.ClearData();
+            
+            LoadLevel();
+        }
+#endif
+        
 
         private void LoadLevel()
         {

@@ -15,11 +15,15 @@ public class TestCanvas : MonoBehaviour
 
     public void OnSyncRemoteDataButtonClicked()
     {
+#if UNITY_WEBGL
         StartCoroutine(_gameSceneManager.Storage.SyncRemoteSave());
+#endif
     }
 
     public void OnClearDataButtonClicked()
     {
+#if UNITY_WEBGL
         StartCoroutine(_gameSceneManager.Storage.ClearDataRemote());
+#endif
     }
 }
