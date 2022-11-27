@@ -36,8 +36,10 @@ namespace Source.Scripts.SaveSystem
         int GetLevel();
         void Save();
         void ClearData();
+#if UNITY_WEBGL
         void SaveRemote();
         IEnumerator SyncRemoteSave(Action onDataIsSynchronizedCallback = null);
         IEnumerator ClearDataRemote(Action onRemoteDataCleared = null);
+#endif
     }
 }
